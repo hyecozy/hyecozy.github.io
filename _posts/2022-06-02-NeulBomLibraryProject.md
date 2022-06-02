@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: single
 title:  "늘봄 도서관 프로젝트"
 ---
 # 늘봄 도서관 프로젝트
