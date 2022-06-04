@@ -119,7 +119,8 @@ Java, Spring, MyBatis, JQuery, JavaScript, HTML, CSS, Oracle DB, SVN
 
 
 #### ✔️북적북적2(쌓아보기 버전)
-➡️읽은 도서의 페이지 수를 UI 구현에 사용하기 위해 두께를 조절합니다. 100페이지 이하의 도서는 div가 너무 얇아질 수 있기 때문에 따로 조절했습니다.   
+➡️새 창으로 열립니다.   
+읽은 도서의 페이지 수를 UI 구현에 사용하기 위해 두께를 조절합니다. 100페이지 이하의 도서는 div가 너무 얇아질 수 있기 때문에 따로 조절했습니다.   
 또 전체 회원의 독서량에 대한 상위 백분율을 조회합니다. / memberController.java
 ![화면 캡처 2022-06-04 193515](https://user-images.githubusercontent.com/94097773/171995493-f0454fa6-6e2c-426a-9d44-a0441ea06316.png)
 ```
