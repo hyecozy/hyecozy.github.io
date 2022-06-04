@@ -17,7 +17,7 @@ Java, Spring, MyBatis, JQuery, JavaScript, HTML, CSS, Oracle DB, SVN
    
 ### 🍀What I did
 ##### ✔️주요 기능 프로세스
-![Untitled Diagram drawio](https://user-images.githubusercontent.com/94097773/171994414-76f382d5-5935-4b6c-be78-a3dd15ad73ca.png)
+![Untitled Diagram drawio](https://user-images.githubusercontent.com/94097773/171994414-76f382d5-5935-4b6c-be78-a3dd15ad73ca.png)   
 ➡️북적북적 : 독서 계획, 기록을 위한 기능입니다. 사용자 입장을 고려했을 때 추가하고 싶어진 기능이었고 이것이 늘봄 도서관의 차별화를 보여줄 것이라 생각하여 주요 부분에 넣었습니다.   
 북적북적이라는 이름과 쌓아보기 UI는 북적북적이라는 앱에서 가져왔습니다.   
 ➡️사용자 : 도서관 홈페이지에 필수적으로 들어가야 하는 기능이고 학원에서 배운 것을 전체적으로 쓸 수 있었습니다.
