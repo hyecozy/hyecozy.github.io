@@ -27,8 +27,8 @@ Java, Spring, MyBatis, JQuery, JavaScript, HTML, CSS, Oracle DB, SVN
 3. 도서관 찾아오시는 길 카카오맵 API
 4. 테이블 설계 및 수정
 
-### 🍀UI & Code
-#### ✔️북적북적1(독서기록장)
+### 🍀기능 
+#### 🟢북적북적1(독서기록장)
 ![화면 캡처 2022-06-04 192733](https://user-images.githubusercontent.com/94097773/171995297-77b616e0-0bd1-4071-b74a-d47fd67d3996.png)
 ![화면 캡처 2022-06-04 192811](https://user-images.githubusercontent.com/94097773/171995306-4ef18822-8739-4a23-8d68-eb5130cf3475.png)
 ※우측 하단의 TO READ LIST는 저 위치에 픽스되어 있으므로 캡처가 2번 됐습니다.   
@@ -118,7 +118,7 @@ Java, Spring, MyBatis, JQuery, JavaScript, HTML, CSS, Oracle DB, SVN
  ```
 
 
-#### ✔️북적북적2(쌓아보기 버전)
+#### 🟢북적북적2(쌓아보기 버전)
 ➡️새 창으로 열립니다.   
 읽은 도서의 페이지 수를 UI 구현에 사용하기 위해 두께를 조절합니다. 100페이지 이하의 도서는 div가 너무 얇아질 수 있기 때문에 따로 조절했습니다.   
 또 전체 회원의 독서량에 대한 상위 백분율을 조회합니다. / memberController.java
@@ -173,3 +173,340 @@ member-Mapper.xml
 		ORDER BY CNT DESC
    </select>
  ```
+
+#### 🟢회원1 (회원가입)
+![화면 캡처 2022-06-05 204824](https://user-images.githubusercontent.com/94097773/172049042-f07ec7ff-6654-450e-a15d-903b2640c9f4.png)   
+➡️유효성 검사를 합니다. (JQuery validate)   
+전체: DB에서 NOT NULL로 설정돼 있는 데이터는 필수 입력값으로 받습니다.   
+프로필 사진의 경우, 따로 설정하지 않으면 MemberController에서 기본 프로필 이미지로 자동 저장됩니다.   
+아이디: 중복 확인 버튼을 클릭하여 기존 아이디와 겹치지 않는지 확인하며, 길이의 제한이 있습니다.
+비밀번호: 비밀번호 확인으로 사용자가 정확한 비밀번호를 입력했는지 확인합니다.   
+전화번호: 3-4자의 숫자를 입력했는지 확인합니다.   
+➡️주소 입력 시, 다음 우편번호 API를 사용합니다.   
+   
+join_form.js   
+아이디 
+```
+/*아이디 중복 체크 */
+function checkId(){
+const newId = document.getElementById('inputId1').value;
+$.ajax({
+		url: '/member/checkId', //요청경로
+		type: 'post',
+		data: {'memId':newId}, //필요한 데이터 '데이터이름':값
+		success: function(result) {
+			if(result === 1){
+				$('.id-unavailable').css("display", "inline-block");
+				$('.id-available').css("display", "none");
+			}
+			else if(result === 0) {
+				$('.id-available').css("display", "inline-block");
+				$('.id-unavailable').css("display", "none");
+			}
+			
+		},
+		error: function() {
+			
+			alert('실패');
+		}
+	});
+}
+```
+
+```
+/*유효성 검사*/
+$('#joinForm').validate({
+	debug: false,
+	groups:{
+		username1: 'memTell1 memTell2',
+		username2: 'memEmail1 memEmail2'
+	},
+	rules: {
+		memId: {
+		required: true,
+		minlength: 5,
+		maxlength: 12
+		},
+		memPwdCheck: { 
+		required: true,
+        equalTo: '#inputPwd'
+         },
+		memName: {
+		required: true
+		},
+		memBirth: {
+		required: true
+		},
+		memGender:{
+		required: true
+		},
+		memTell1: {
+		digits: true,
+		required: true,
+		minlength: 3,
+		maxlength: 4
+		},
+		memTell2:{
+		digits: true,
+		required: true,
+		minlength: 4,
+		maxlength: 4
+		},
+		memEmail1:{
+		required: true
+		},
+		memEmail2:{
+		required: true
+		},
+		memAddr:{
+		required: true
+		}
+      },
+	messages: {
+  	  memId: {
+			required: '필수 입력 항목입니다.',
+            minlength: '5자 이상 입력해 주셔야 해요.',           
+            maxlength: '12자 이하로 입력해 주셔야 해요.'            
+         },
+	memPwdCheck: {
+		required: '필수입력 항목입니다.',
+		equalTo: '위에 입력하신 비밀번호랑 일치하지 않아요😥'
+		},
+	memName:{
+		required: '필수입력 항목입니다.',
+		},
+	memBirth: {
+		required: '필수입력 항목입니다.'
+		},
+	memGender:{
+		required: '필수입력 항목입니다.'
+		},
+	memTell1: {
+		digits: '올바른 전화번호 표기 형식이 아닙니다.',
+		required: '필수입력 항목입니다.',
+		minlength: '3~4자리의 숫자를 입력해 주세요.',
+		maxlength: '4자리의 숫자를 입력해 주세요.'
+		},
+	memTell2: {
+		digits: '올바른 전화번호 표기 형식이 아닙니다.',
+		required: '필수입력 항목입니다.',
+		minlength: '3~4자리의 숫자를 입력해 주세요.',
+		maxlength: '4자리의 숫자를 입력해 주세요.'
+		},
+	memEmail1: {
+		required: '필수입력 항목입니다.'
+		},
+	memEmail2: {
+		required: '필수입력 항목입니다.'
+		},
+	memAddr:{
+		required: '필수입력 항목입니다.'
+		}
+      },
+	errorElement:'div',
+	errorPlacement: function(error,element){
+		if($(element).attr('id') == 'inputTell1' || $(element).attr('id') == 'inputTell2'){
+			error.insertAfter($('#joinTell'));
+		}
+		else if($(element).attr('id') == 'inputEmail1' || $(element).attr('id') == 'inputEmail2'){
+			error.insertAfter($('#joinEmail'));
+		}
+		else{
+			error.insertAfter(element);
+		}
+		error.css('color', 'red');
+		error.css('font-size', '12px');
+		error.css('margin-top', '2px');
+	  },
+      submitHandler: function(form) {
+		$('#inputTell1').attr('name', 'memTell');
+		$('#inputTell2').attr('name', 'memTell');
+		$('#inputEmail1').attr('name', 'memEmail');
+		$('#inputEmail2').attr('name', 'memEmail');
+		removeSpecData(form);
+        form.submit();   //유효성 검사를 통과시 전송
+      }
+   });
+
+```
+
+#### 🟢회원2 (회원탈퇴)
+![화면 캡처 2022-06-05 211337](https://user-images.githubusercontent.com/94097773/172049860-072bfe18-c95e-444e-a107-daad4f7da401.png)   
+➡️회원 탈퇴 페이지에 가기 위해서는 비밀번호를 입력해야 하며, 잘 입력할 경우 위의 화면으로 이동합니다.   
+탈퇴 안내 후 한번 더 클릭하면 탈퇴 아이디로 전환되면서 로그아웃 됩니다.   
+탈퇴 아이디로는 로그인 할 수 없습니다.   
+   
+#### 🟢회원2 (로그인)
+![화면 캡처 2022-06-05 211747](https://user-images.githubusercontent.com/94097773/172050108-b61007f9-4788-4091-a74b-9bed588423cd.png)
+![화면 캡처 2022-06-05 212016](https://user-images.githubusercontent.com/94097773/172050123-90783c21-8503-4944-9afc-f4bbf6577cd9.png)   
+➡️Session을 이용하여 로그인한 사용자의 정보를 1시간 동안 저장합니다.  
+로그인 시, 화면 상단에 프로필 영역이 생깁니다.   
+memberController.java
+```
+ // 로그인
+   @ResponseBody
+   @PostMapping("/login")
+   public int login(String memId, String memPwd, HttpSession session) {
+      MemberVO loginMem = memberService.login(memId);
+      int result = 1;
+      if (loginMem != null && pwEncoder.matches(memPwd, loginMem.getMemPwd())) {
+    	  
+    	  if(loginMem.getIsDelete().equals("Y")) {
+    		  result = 2;
+    	  }
+    	  else {
+    		  session.setAttribute("loginInfo", loginMem);
+    		  //session.setMaxInactiveInterval(60*60);
+    		  result = 0;
+    	  }
+      }
+      return result;
+   }
+```
+   
+#### 🟢회원3 (내 정보 조회/수정)
+![화면 캡처 2022-06-05 212856](https://user-images.githubusercontent.com/94097773/172050436-cada0b54-4d72-4115-ad6a-5cd7d2b77b4f.png)   
+➡️Boot Strap의 Modal을 이용하여, 수정하기 버튼을 누르면 Modal창이 뜹니다.   
+기본 정보와 보안 정보의 경우, 정보 입력 도즁 Model창을 입력칸이 리셋됩니다.   
+my_page_detail.js
+```
+//모달 닫고 열었을 때 정보 다 사라져있도록
+function showPopup(){
+	$('#myPageDetail-basic .modal-body-top-right input').each(function(index, element){
+		$(element).val('');
+	});
+	
+	$('#myPageDetail-basic').modal('show');
+}
+```
+![화면 캡처 2022-06-05 213452](https://user-images.githubusercontent.com/94097773/172050724-74631ea9-db86-4ce1-bd54-f8ea07c880db.png)   
+➡️기본정보 수정 Modal창의 경우, 프로필 사진을 변경/삭제 시 썸네일로 확인할 수 있습니다. 여기서 삭제는 기본 프로필로 변경되는 것을 의미합니다.
+```
+//기본정보 변경 시 변경되는 프로필 이미지 미리보기
+function previewFile(){
+	let preview = document.getElementById('thumbnail');
+	let file = document.querySelector('input[type=file]').files[0];
+	let reader = new FileReader();
+	
+	reader.addEventListener("load", function(){
+		preview.src = reader.result;
+	}, false);
+
+	if(file){
+		reader.readAsDataURL(file);
+	}
+}
+
+//프사 삭제 시 프로필 이미지 미리보기
+function deleteProfileImage(){
+	const hiddenMemImg = document.querySelector('#basicForm input[name="memImage"]');
+	
+	let preview = document.getElementById('thumbnail');
+	preview.src = '/resources/images/member/profile_sample.jpg';
+	hiddenMemImg.value = 'profile_sample.jpg';
+	
+}
+```
+기본 정보 수정
+memberController.java
+```
+//기본 정보 수정
+   @PostMapping("/updateBasicInfo")
+   public String updateBasicInfo(Model model, MemberVO memberVO, MultipartHttpServletRequest multi
+         , HttpSession session, RedirectAttributes re) {
+	  memberVO.setMemTell(memberVO.getMemTell().replace(",", "-"));
+      MultipartFile file = multi.getFile("file");
+      if(!file.getOriginalFilename().equals("")) {
+         String uploadPath = "D:\\dev\\workspaceSTS\\LIBRARY\\src\\main\\webapp\\resources\\images\\member\\";
+         
+         try {
+            String memOriginName = file.getOriginalFilename();
+            String memAtImgName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            file.transferTo(new File(uploadPath + memAtImgName));
+            MemberImageVO vo = new MemberImageVO();
+            vo.setMemOriginName(memOriginName);
+            vo.setMemAtImgName(memAtImgName);
+            vo.setMemId(memberVO.getMemId());
+            memberService.updateMemImage(vo);
+            
+            memberVO.setMemImage(memAtImgName);
+            
+         } catch (IllegalStateException e) {
+            //업로드 예외 발생시
+            e.printStackTrace();
+         } catch (IOException e) {
+            //파일 입출력 예외 발생시
+            e.printStackTrace();
+         }
+         
+      }
+      //기본 정보 수정은 했는데 프로필은 바꾸지 않았을 경우
+      else if(file.getOriginalFilename().equals("")){
+         //프로필 삭제를 했을 경우 (profile_sample로 바꿀 경우)
+         if(memberVO.getMemImage().equals("profile_sample.jpg")){
+        	 MemberImageVO vo = new MemberImageVO();
+        	 vo.setMemOriginName("profile_sample.jpg");
+        	 vo.setMemAtImgName("profile_sample.jpg");
+        	 vo.setMemId(memberVO.getMemId());
+        	 memberService.updateMemImage(vo);
+        	 memberVO.setMemImage("profile_sample.jpg");
+        	// memberService.joinMember(memberVO);
+        	// memberService.insertMemberImage(vo);
+         }
+         else {
+        	 memberVO.setMemImage(memberService.selectMemAtImgName(memberVO.getMemId()));
+         }
+      }
+    
+```
+#### 🟢회원4 (아이디/비밀번호 찾기)
+![화면 캡처 2022-06-05 214110](https://user-images.githubusercontent.com/94097773/172050955-684ada3c-38cc-4e89-b0b3-14cfe24256cd.png)   
+➡️유효성 검사 만족 시, 사용자 정보에 저장된 이메일로 임시 비밀번호가 전송됩니다.      
+memberController.java
+```
+   @ResponseBody
+   @PostMapping("/findPwd")
+   public void findPwd(MemberVO memberVO) {
+      // 임시 비번 보낼 이메일 조회
+      String memEmail = memberService.selectEmail(memberVO);
+      // 임시 비밀번호 생성 소문자 + 대문자 + 숫자 포함 8자리
+      String tempPwd = getTempPwd();
+      
+      //-------------------비밀번호 암호화-----------------------//
+      String encodePw = pwEncoder.encode(tempPwd);
+      memberVO.setMemPwd(encodePw);
+      
+     // memberVO.setMemPwd(tempPwd);
+      memberService.updateTempPwd(memberVO);
+      try {
+         MimeMessage message = mailSender.createMimeMessage();
+         MimeMessageHelper messageHelper;
+         messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+         messageHelper.setFrom("surfurlove@gmail.com");
+         messageHelper.setTo(memEmail);
+         messageHelper.setSubject(memberVO.getMemName() + "님 늘봄 도서관 비밀번호 잃어버리셨죠?");
+         messageHelper.setText("임시 비밀번호는 <" + tempPwd + ">입니다. 로그인 후 새 비밀번호로 변경해 주세요.");
+         mailSender.send(message);
+
+      } catch (MessagingException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+
+   }
+```
+➡️임시 비밀번호를 가지고 있는 사용자가 로그인 시, 메인화면에 비밀번호를 수정하라는 alert을 받습니다.   
+home.jsp
+```
+ <c:if test="${sessionScope.loginInfo.isPwdTemp eq 'Y' }">
+	<script type="text/javascript">
+        if (!confirm("새로운 비밀번호로 설정해 주세요.")) {
+            alert("언제든지 내 정보 상세보기에서 수정 가능합니다.");
+        } 
+        else {
+            location.href='/member/myPageDetail';
+        }
+	</script>
+</c:if>
+```
+확인을 누르면 내 정보 상세 페이지로 이동합니다. 
