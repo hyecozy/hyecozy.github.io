@@ -196,9 +196,7 @@ memPwd 유효성 검사 수정 ('영문,숫자,특문 포함' 조건 추가)
 */
 
 $.validator.addMethod('pwdChk',  function( value, element ) {
-
 return this.optional(element) ||  /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/.test(value);
-
 }); 
 $('#joinForm').validate({
 	debug: false,
