@@ -189,34 +189,17 @@ member-Mapper.xml
    
 join_form.js   
 ```
-/*아이디 중복 체크 */
-function checkId(){
-const newId = document.getElementById('inputId1').value;
-$.ajax({
-		url: '/member/checkId', //요청경로
-		type: 'post',
-		data: {'memId':newId}, //필요한 데이터 '데이터이름':값
-		success: function(result) {
-			if(result === 1){
-				$('.id-unavailable').css("display", "inline-block");
-				$('.id-available').css("display", "none");
-			}
-			else if(result === 0) {
-				$('.id-available').css("display", "inline-block");
-				$('.id-unavailable').css("display", "none");
-			}
-			
-		},
-		error: function() {
-			
-			alert('실패');
-		}
-	});
-}
-```
+/*유효성 검사
+by 혜수
+22-06-06 23:23
+memPwd 유효성 검사 수정 ('영문,숫자,특문 포함' 조건 추가)
+*/
 
-```
-/*유효성 검사*/
+$.validator.addMethod('pwdChk',  function( value, element ) {
+
+return this.optional(element) ||  /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/.test(value);
+
+}); 
 $('#joinForm').validate({
 	debug: false,
 	groups:{
@@ -228,6 +211,10 @@ $('#joinForm').validate({
 		required: true,
 		minlength: 5,
 		maxlength: 12
+		},
+		memPwd:{
+		required: true,
+		pwdChk: true
 		},
 		memPwdCheck: { 
 		required: true,
@@ -265,43 +252,47 @@ $('#joinForm').validate({
 		}
       },
 	messages: {
-  	  memId: {
-			required: '필수 입력 항목입니다.',
-            minlength: '5자 이상 입력해 주셔야 해요.',           
-            maxlength: '12자 이하로 입력해 주셔야 해요.'            
-         },
-	memPwdCheck: {
+		memId: {
+		required: '필수 입력 항목입니다.',
+        minlength: '5자 이상 입력해 주셔야 해요.',           
+        maxlength: '12자 이하로 입력해 주셔야 해요.'            
+        },
+        memPwd: {
+		required: '필수 입력 항목입니다.',
+		pwdChk: '영문, 숫자, 특수문자를 포함해야 합니다.'
+		},
+		memPwdCheck: {
 		required: '필수입력 항목입니다.',
 		equalTo: '위에 입력하신 비밀번호랑 일치하지 않아요😥'
 		},
-	memName:{
+		memName:{
 		required: '필수입력 항목입니다.',
 		},
-	memBirth: {
+		memBirth: {
 		required: '필수입력 항목입니다.'
 		},
-	memGender:{
+		memGender:{
 		required: '필수입력 항목입니다.'
 		},
-	memTell1: {
+		memTell1: {
 		digits: '올바른 전화번호 표기 형식이 아닙니다.',
 		required: '필수입력 항목입니다.',
 		minlength: '3~4자리의 숫자를 입력해 주세요.',
 		maxlength: '4자리의 숫자를 입력해 주세요.'
 		},
-	memTell2: {
+		memTell2: {
 		digits: '올바른 전화번호 표기 형식이 아닙니다.',
 		required: '필수입력 항목입니다.',
 		minlength: '3~4자리의 숫자를 입력해 주세요.',
 		maxlength: '4자리의 숫자를 입력해 주세요.'
 		},
-	memEmail1: {
+		memEmail1: {
 		required: '필수입력 항목입니다.'
 		},
-	memEmail2: {
+		memEmail2: {
 		required: '필수입력 항목입니다.'
 		},
-	memAddr:{
+		memAddr:{
 		required: '필수입력 항목입니다.'
 		}
       },
@@ -329,7 +320,6 @@ $('#joinForm').validate({
         form.submit();   //유효성 검사를 통과시 전송
       }
    });
-
 ```
 
 #### 🟢회원2 (회원탈퇴)
