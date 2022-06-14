@@ -7,4 +7,7 @@ title:  "멀로이 쇼핑몰 프로젝트"
 >By. 혜수   
 >2022.06 ~
    
-요구사항
+### 개발환경(예정)   
+Java, Spring Boot, thymeleaf   
+   
+### 요구사항
