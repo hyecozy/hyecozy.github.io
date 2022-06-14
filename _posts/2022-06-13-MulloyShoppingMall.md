@@ -8,6 +8,6 @@ title:  "멀로이 쇼핑몰 프로젝트"
 >2022.06 ~
    
 ### 개발환경(예정)   
-Java, Spring Boot, thymeleaf   
+Java, Spring, MyBatis, JQuery, JavaScript, HTML, CSS, Oracle DB   
    
 ### 요구사항
